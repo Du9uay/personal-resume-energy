@@ -1,0 +1,3760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能源作品集 - 张能源 | Energy Portfolio V5</title>
+
+    <!-- 引入样式和库 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="energy_theme_1.css">
+
+    <!-- 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- 图标库 -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/map/js/china.js"></script>
+
+    <!-- AOS 动画库 -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- GSAP 高级动画 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Swiper 轮播库 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <style>
+        /* 全局变量 */
+        :root {
+            --primary-green: #00ff80;
+            --primary-blue: #00a8ff;
+            --accent-gold: #ffd700;
+            --dark-bg: #0a0f1b;
+            --card-bg: rgba(24, 28, 38, 0.7);
+            --text-primary: #e8f5e9;
+            --text-secondary: #b0bec5;
+            --font-cn: 'Noto Sans SC', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', var(--font-cn), sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 预加载动画 */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .preloader.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .energy-loader {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .energy-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .energy-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border-top-color: var(--primary-blue);
+            animation-duration: 0.8s;
+            animation-direction: reverse;
+        }
+
+        .energy-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border-top-color: var(--accent-gold);
+            animation-duration: 0.6s;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+
+        /* 粒子背景容器 */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            background: rgba(10, 15, 27, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .navbar.scrolled {
+            padding: 1rem 3rem;
+            background: rgba(10, 15, 27, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 255, 128, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-green);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        /* 英雄区域 - 重新设计 */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 左侧个人信息卡片 */
+        .profile-card {
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.05), rgba(0, 168, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 128, 0.1), transparent 60%);
+            pointer-events: none;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid var(--primary-green);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 255, 128, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            flex: 1;
+        }
+
+        .name-cn {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .position-title {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .education {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .contact-item i {
+            width: 18px;
+            height: 18px;
+            color: var(--primary-green);
+        }
+
+        .profile-bio {
+            padding: 1.5rem;
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .profile-bio p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        /* 右侧技能展示 */
+        .hero-text {
+            z-index: 2;
+        }
+
+        .glitch-text {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-primary) !important;
+            -webkit-text-fill-color: initial !important;
+            background: none !important;
+        }
+
+        .section-title.glitch-text {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-text-fill-color: initial !important;
+        }
+
+        .glitch-text::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--primary-green);
+            z-index: -1;
+        }
+
+        .glitch-text::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--primary-blue);
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(50% 0 20% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 1px); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translate(1px, -1px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(70% 0 20% 0); transform: translate(1px, -1px); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translate(-1px, 1px); }
+        }
+
+        /* .typewriter - 已移除，元素不再存在
+        .typewriter {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            height: 2rem;
+        } */
+
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        /* 技能展示区域 */
+        .skills-showcase {
+            margin-top: 2rem;
+        }
+
+        .skill-category {
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.15), rgba(0, 255, 128, 0.05));
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            border-radius: 25px;
+            color: var(--primary-green);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .skill-tag:hover {
+            background: rgba(0, 255, 128, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 128, 0.2);
+        }
+
+        .skill-tag.secondary {
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.15), rgba(0, 168, 255, 0.05));
+            border-color: rgba(0, 168, 255, 0.3);
+            color: var(--primary-blue);
+        }
+
+        .skill-tag.secondary:hover {
+            background: rgba(0, 168, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.2);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            color: var(--dark-bg);
+            border: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+        }
+
+        /* 世界地图容器 */
+        .map-container {
+            position: relative;
+            height: 500px;
+            background: radial-gradient(circle at center, rgba(0, 255, 128, 0.05) 0%, transparent 70%);
+        }
+
+
+        /* 个人概览区域 */
+        .overview-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(0, 168, 255, 0.05));
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Personal Information Section Styles - 重新设计为居中布局 */
+        .personal-info-container {
+            display: flex;
+            justify-content: center;
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+
+        .info-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .avatar-container {
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-green);
+            box-shadow: 0 0 40px rgba(0, 255, 128, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(0, 255, 128, 0.5);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            border: 2px dashed var(--primary-blue);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 10px;
+        }
+
+        .basic-info-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            width: 100%;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 25px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(0, 255, 128, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 128, 0.2);
+        }
+
+        .info-item i {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-green);
+        }
+
+        .info-right {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .contact-section,
+        .evaluation-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .contact-section:hover,
+        .evaluation-section:hover {
+            transform: translateX(5px);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .contact-section h3,
+        .evaluation-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-section h3::before {
+            content: "📞";
+            font-size: 1.3rem;
+        }
+
+        .evaluation-section h3::before {
+            content: "✨";
+            font-size: 1.3rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        .contact-value {
+            color: rgba(255, 255, 255, 0.9);
+            word-break: break-all;
+        }
+
+        .evaluation-content {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.05rem;
+            text-align: justify;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border-left: 3px solid #667eea;
+            padding-left: 20px;
+        }
+
+        /* 新的个人评价板块样式 */
+        .evaluation-section-new {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evaluation-section-new::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 255, 128, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .evaluation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .evaluation-card {
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.05), rgba(0, 168, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 255, 128, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .evaluation-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+
+        .evaluation-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+            text-align: justify;
+            text-indent: 2em;
+        }
+
+        .evaluation-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .highlight-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.1), rgba(0, 168, 255, 0.1));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 128, 0.2);
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.15), rgba(0, 168, 255, 0.15));
+        }
+
+        .highlight-item i {
+            width: 30px;
+            height: 30px;
+            color: var(--primary-green);
+        }
+
+        .highlight-item span {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* Responsive Design for Personal Info and Evaluation */
+        @media (max-width: 1024px) {
+            .personal-info-container {
+                padding: 0 15px;
+            }
+
+            .basic-info-grid {
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .info-item {
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+
+            .evaluation-card {
+                padding: 40px;
+            }
+
+            .evaluation-highlights {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .avatar-img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .avatar-overlay {
+                width: 160px;
+                height: 160px;
+            }
+
+            .name {
+                font-size: 2rem;
+            }
+
+            .basic-info-grid {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .info-item {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .evaluation-section-new {
+                padding: 60px 15px;
+            }
+
+            .evaluation-card {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+
+
+            .evaluation-text {
+                font-size: 1rem;
+            }
+
+            .evaluation-highlights {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .highlight-item {
+                padding: 15px;
+            }
+        }
+
+        /* 项目卡片网格 - Pinterest风格 */
+        .projects-section {
+            padding: 5rem 2rem;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 项目卡片 - 优化尺寸设计 */
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            height: auto;
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0, 255, 128, 0.25);
+            border-color: var(--primary-green);
+        }
+
+        .card-inner {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.1), rgba(0, 168, 255, 0.1));
+            flex-shrink: 0;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-card:hover .card-image img {
+            transform: scale(1.15);
+        }
+
+        /* 图片上的渐变遮罩 */
+        .card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, rgba(10, 15, 27, 0.9), transparent);
+            pointer-events: none;
+        }
+
+        /* 项目编号 */
+        /* 新的项目信息样式 */
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .project-info .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .info-item i {
+            color: var(--primary-green);
+            width: 20px;
+            height: 20px;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .project-date {
+            color: var(--primary-green);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .project-company {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex: 1;
+            font-size: 14px;
+            min-height: 60px;
+            max-height: 80px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            padding: 0.375rem 1rem;
+            background: rgba(0, 255, 128, 0.1);
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            border-radius: 25px;
+            font-size: 0.8125rem;
+            color: var(--primary-green);
+            transition: all 0.3s;
+        }
+
+        .tag:hover {
+            background: rgba(0, 255, 128, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .project-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            color: var(--dark-bg);
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .project-action:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 128, 0.3);
+        }
+
+        /* 项目详情弹窗 */
+        .project-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 27, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .project-modal::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        .project-modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+        }
+
+
+        .modal-header {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 128, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-green);
+            background: rgba(0, 255, 128, 0.1);
+        }
+
+        .modal-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .modal-body {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        /* 新的弹窗布局样式 */
+        .process-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 128, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .process-nav-item {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .process-nav-item:hover {
+            border-color: var(--primary-green);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .process-nav-item.active {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border-color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* 新的流程导航样式 */
+        .process-nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .process-nav-btn:hover {
+            border-color: var(--primary-green);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .process-nav-btn.active {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border-color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* 流程容器 */
+        .process-container {
+            margin-top: 0.5rem;
+            min-height: 500px;
+            position: relative;
+        }
+
+        /* 流程面板 - 默认隐藏 */
+        .process-panel {
+            display: none;
+            gap: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* 激活的流程面板显示 */
+        .process-panel.active {
+            display: flex;
+        }
+
+        /* 左侧图片盒子 */
+        .process-image-box {
+            flex: 0 0 400px;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            background: var(--card-bg);
+        }
+
+        .process-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: var(--card-bg);
+        }
+
+        /* 右侧文本盒子 */
+        .process-text-box {
+            flex: 1;
+            padding-left: 1rem;
+            overflow-y: auto;
+            max-height: 500px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .process-text-box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        .process-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .process-description-section,
+        .process-work-section {
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .process-description-section h4,
+        .process-work-section h4 {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-description-section p,
+        .process-work-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .process-work-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .process-work-section li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .process-work-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .process-detail {
+            display: flex;
+            gap: 2rem;
+            min-height: 400px;
+        }
+
+        .process-content-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .process-content-right {
+            flex: 1.5;
+            padding-left: 1rem;
+        }
+
+        .process-image-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            background: var(--card-bg);
+            position: relative;
+        }
+
+        .process-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: var(--card-bg);
+        }
+
+        .process-description {
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .process-description h4 {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-description p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .work-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .work-content h4 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .work-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .work-content li {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .work-content li:before {
+            content: "•";
+            color: var(--primary-green);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* 流程详情样式 */
+        .process-detail-title {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .process-detail-description {
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .process-detail-description h4 {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-detail-description p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .process-detail-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .process-detail-content h4 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-detail-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .process-detail-content li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .process-detail-content li:before {
+            content: "▸";
+            color: var(--primary-green);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .placeholder-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 255, 128, 0.05);
+        }
+
+        /* 响应式布局 - 项目卡片 */
+        @media (max-width: 1024px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+                gap: 2rem;
+            }
+
+            .project-card {
+                min-height: 350px;
+            }
+
+            .card-image {
+                height: 180px;
+            }
+
+            .project-info {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .process-navigation {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .process-nav-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .process-detail {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .process-content-right {
+                padding-left: 0;
+            }
+
+            .process-image-container {
+                height: 250px;
+            }
+        }
+
+        .process-flow {
+            background: rgba(0, 255, 128, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+        }
+
+        .process-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--primary-green);
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .process-step {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 128, 0.1);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 20px rgba(0, 255, 128, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .step-image-container {
+            height: 120px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.1), rgba(0, 168, 255, 0.1));
+        }
+
+        .step-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 职业历程时间线 */
+        .timeline-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(0, 168, 255, 0.05), transparent);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary-green), var(--primary-blue));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 3rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+            text-align: left;
+        }
+
+        .timeline-content:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 128, 0.3);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--primary-green);
+            border: 4px solid var(--dark-bg);
+            border-radius: 50%;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: translateX(-50%) scale(1.5);
+            box-shadow: 0 0 20px var(--primary-green);
+        }
+
+        .timeline-date {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 教育背景样式 */
+        .education-section {
+            padding: 2rem 2rem 5rem;
+            background: linear-gradient(180deg, transparent, rgba(0, 168, 255, 0.05), transparent);
+        }
+
+        .education-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .education-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(0, 168, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 168, 255, 0.2);
+            border-color: rgba(0, 168, 255, 0.4);
+        }
+
+        .school-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .school-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #00a8ff, #00ff88);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #111;
+            flex-shrink: 0;
+        }
+
+        .school-info h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .major-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .major-info .major {
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .courses-grid {
+            margin-top: 2rem;
+        }
+
+        .courses-grid h4 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .courses-grid h4::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #00a8ff, #00ff88);
+            border-radius: 2px;
+        }
+
+        .course-category {
+            margin-bottom: 2rem;
+        }
+
+        .course-category h5 {
+            font-size: 1rem;
+            color: #00ff88;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .course-item {
+            background: rgba(0, 168, 255, 0.05);
+            border: 1px solid rgba(0, 168, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .course-item:hover::before {
+            left: 100%;
+        }
+
+        .course-item:hover {
+            background: rgba(0, 168, 255, 0.1);
+            border-color: rgba(0, 168, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .achievement-items {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .achievement-items h4 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .achievement-items h4::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #00a8ff, #00ff88);
+            border-radius: 2px;
+        }
+
+        .achievement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .achievement-tag {
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid rgba(0, 168, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.9rem;
+            color: #00ff88;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-tag:hover {
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.2), rgba(0, 255, 136, 0.1));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.2);
+        }
+
+        /* 技能护照 - 全新设计 */
+        .skills-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, rgba(0, 168, 255, 0.05), transparent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skills-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 128, 0.05) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .skills-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+
+        /* 核心能力网格 */
+        .core-skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .core-skill-card {
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.05), rgba(0, 168, 255, 0.05));
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .core-skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .core-skill-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .core-skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 128, 0.2);
+        }
+
+        .skill-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--dark-bg);
+            margin-bottom: 1rem;
+        }
+
+        .skill-content {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* 复合能力部分 */
+        .composite-skills-section {
+            margin-top: 4rem;
+        }
+
+        .skills-subtitle {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 复合能力网格 - 一行三个 */
+        .composite-skills-accordion {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .composite-skills-accordion {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .composite-skills-accordion {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .accordion-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .accordion-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0, 255, 128, 0.02);
+            border-bottom: 1px solid rgba(0, 255, 128, 0.1);
+        }
+
+        .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .accordion-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-bg);
+        }
+
+        .accordion-content {
+            padding: 1.5rem;
+            border-top: none;
+        }
+
+        .accordion-text {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+
+        .skill-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-level {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* 联系区域 */
+        .contact-section {
+            padding: 5rem 2rem;
+            background: radial-gradient(circle at center, rgba(0, 255, 128, 0.05) 0%, transparent 70%);
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .contact-icon:hover {
+            background: var(--primary-green);
+            transform: translateY(-5px);
+        }
+
+        .contact-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--primary-green);
+        }
+
+        /* 页脚 */
+        .footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 128, 0.1);
+            color: var(--text-secondary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            /* 教育背景移动端样式 */
+            .education-section {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            .education-card {
+                padding: 1.5rem;
+            }
+
+            .school-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .school-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .school-info h3 {
+                font-size: 1.25rem;
+            }
+
+            .major-info {
+                justify-content: center;
+            }
+
+            .course-list {
+                grid-template-columns: 1fr;
+            }
+
+            .achievement-list {
+                justify-content: center;
+            }
+
+            .timeline::before {
+                left: 2rem;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-dot {
+                left: 2rem;
+            }
+
+
+            .glitch-text {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 预加载器 -->
+    <div class="preloader">
+        <div class="energy-loader">
+            <div class="energy-ring"></div>
+            <div class="energy-ring"></div>
+            <div class="energy-ring"></div>
+        </div>
+    </div>
+
+
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">个人简历</div>
+            <ul class="nav-links">
+                <li><a href="#hero" class="nav-link">首页</a></li>
+                <li><a href="#education" class="nav-link">教育</a></li>
+                <li><a href="#projects" class="nav-link">项目</a></li>
+                <li><a href="#skills" class="nav-link">技能</a></li>
+                <li><a href="#contact" class="nav-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 个人信息板块 -->
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <div class="personal-info-container">
+                <!-- 居中显示：头像和基本信息 -->
+                <div class="info-center" data-aos="fade-up">
+                    <div class="avatar-container">
+                        <img src="./苏拓.png" alt="苏拓" class="avatar-img">
+                        <div class="avatar-overlay"></div>
+                        <h1 class="name">苏拓</h1>
+                    </div>
+
+                    <div class="basic-info-grid">
+                        <div class="info-item">
+                            <i data-lucide="user"></i>
+                            <span>男</span>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="map-pin"></i>
+                            <span>江苏省南京市</span>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="target"></i>
+                            <span>求职意向：电气自动化技术员</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教育背景 -->
+    <section id="education" class="education-section">
+        <div class="education-container">
+            <h2 class="section-title glitch-text" data-text="教育背景" data-aos="fade-up">教育背景</h2>
+
+            <div class="education-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="school-header">
+                    <div class="school-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <div class="school-info">
+                        <h3>安徽电子信息职业技术学院</h3>
+                        <div class="major-info">
+                            <span class="major">人工智能技术应用</span>
+                            <span>2018.9-2021.6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="courses-grid">
+                    <h4>专业课程</h4>
+
+                    <div class="course-category">
+                        <h5>专业基础课程</h5>
+                        <div class="course-list">
+                            <div class="course-item">人工智能应用导论</div>
+                            <div class="course-item">程序设计基础</div>
+                            <div class="course-item">Python应用开发</div>
+                            <div class="course-item">Linux操作系统</div>
+                            <div class="course-item">数据库技术</div>
+                            <div class="course-item">计算机网络技术</div>
+                            <div class="course-item">人工智能数学基础</div>
+                        </div>
+                    </div>
+
+                    <div class="course-category">
+                        <h5>专业核心课程</h5>
+                        <div class="course-list">
+                            <div class="course-item">人工智能数据服务</div>
+                            <div class="course-item">计算机视觉应用开发</div>
+                            <div class="course-item">深度学习应用开发</div>
+                            <div class="course-item">自然语言处理应用开发</div>
+                            <div class="course-item">智能语音处理及应用开发</div>
+                            <div class="course-item">人工智能系统部署与运维</div>
+                            <div class="course-item">人工智能综合项目开发</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目展示 -->
+    <section id="projects" class="projects-section">
+        <div class="section-container">
+            <h2 class="section-title glitch-text" data-text="参与项目" data-aos="fade-up">参与项目</h2>
+
+            <div class="project-grid">
+                <!-- 项目1: 变电站供配电系统运维 -->
+                <div class="project-card" onclick="openModal('project1')" data-aos="fade-up">
+                    <div class="card-inner">
+                        <div class="card-image">
+                            <img src="./public/变电站供配电系统运维与应急处置全流程提升项目/变电站供配电系统运维与应急处置全流程提升项目-主图.jpeg"
+                                 alt="变电站供配电系统运维">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="project-title">变电站供配电系统运维与应急处置</h3>
+                            <p class="project-description">
+                                本项目以变电站运行阶段的供配电系统运维为核心，围绕“监控—诊断—处置—演练—改进”构建精细化运维体系。通过应急预案制定、故障识别与快速处置、电气设备预防性检修、系统化演练培训和智能化监控平台建设，形成全链路闭环。
+                            </p>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <i data-lucide="calendar"></i>
+                                    <span>2022.06 - 2023.12</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>电力系统运维工程师</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="building-2"></i>
+                                    <span>江苏电力</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目2: 220kV变电站无人机巡检 -->
+                <div class="project-card" onclick="openModal('project2')" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-inner">
+                        <div class="card-image">
+                            <img src="./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/某220kV变电站迎峰度夏站内外设备专项集中检查项目-总图.jpg"
+                                 alt="220kV变电站无人机巡检">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="project-title">220kV变电站迎峰度夏无人机巡检</h3>
+                            <p class="project-description">
+                                该项目面向迎峰度夏期间电网负荷大、风险高的运行场景，重点通过无人机对站外线路、杆塔及站内设备进行精细化巡检。夏季高温条件下，设备常见问题包括接点发热、绝缘老化与金具锈蚀，若未能及时发现，将可能引发设备故障或大范围停电。
+                            </p>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <i data-lucide="calendar"></i>
+                                    <span>2023.05 - 2023.08</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>巡检工程师</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="building-2"></i>
+                                    <span>南方电网</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目3: EHS管理体系 -->
+                <div class="project-card" onclick="openModal('project3')" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-inner">
+                        <div class="card-image">
+                            <img src="./public/EHS管理体系建设与运行项目/EHS管理体系建设与运行项目-主图.jpg"
+                                 alt="EHS管理体系">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="project-title">EHS管理体系建设与认证</h3>
+                            <p class="project-description">
+                                本项目聚焦能源企业的环境、健康与安全（EHS）体系建设与运行，目标是通过ISO14001与ISO45001的融合，建立覆盖生产全流程的合规与风险控制框架。体系建设遵循PDCA循环，实现危险源和环境因素的系统识别与分级管控。
+                            </p>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <i data-lucide="calendar"></i>
+                                    <span>2021.03 - 2022.09</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>EHS体系负责人</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="building-2"></i>
+                                    <span>大型能源集团</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目4: 风机叶片生产 -->
+                <div class="project-card" onclick="openModal('project4')" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-inner">
+                        <div class="card-image">
+                            <img src="./public/风机叶片生产质量控制与研发工艺优化项目/风机叶片生产质量控制与研发工艺优化项目-主图.jpg"
+                                 alt="风机叶片生产">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="project-title">风机叶片生产质量控制与优化</h3>
+                            <p class="project-description">
+                                该项目面向风机叶片生产环节，目标是通过工艺优化与质量管控，确保叶片在极端风况下的稳定性和耐久性。本人在导师指导下主要参与原材料检验、工艺执行、过程监控和缺陷修复等一线工作，通过全流程的操作配合与数据记录，提升了班组在生产效率、质量合格率和工艺稳定性上的整体水平。
+                            </p>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <i data-lucide="calendar"></i>
+                                    <span>2020.01 - 2021.06</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>质量总监</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="building-2"></i>
+                                    <span>风电设备制造商</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目5: 晶硅光伏电池片 -->
+                <div class="project-card" onclick="openModal('project5')" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-inner">
+                        <div class="card-image">
+                            <img src="./public/某工厂晶硅光伏电池片制备项目/某工厂晶硅光伏电池片制备项目-主图.jpg"
+                                 alt="晶硅光伏电池片">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="project-title">晶硅光伏电池片PERC工艺优化</h3>
+                            <p class="project-description">
+                                本项目致力于晶体硅光伏电池片的制备工艺优化与质量控制，涵盖硅片切割、化学清洗、表面制绒、PN结扩散、电极制备、减反射膜沉积、快速烧结及组件封装等全流程。项目目标是提高光伏电池片的光电转换效率（≥15%），确保生产过程符合严格标准。
+                            </p>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <i data-lucide="calendar"></i>
+                                    <span>2019.07 - 2020.10</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>工艺工程师</span>
+                                </div>
+                                <div class="info-item">
+                                    <i data-lucide="building-2"></i>
+                                    <span>光伏制造企业</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能护照 -->
+    <section id="skills" class="skills-section">
+        <div class="skills-container">
+            <h2 class="section-title glitch-text" data-text="专业技能" data-aos="fade-up">专业技能</h2>
+
+            <!-- 核心能力内容 -->
+            <div class="core-skills-section">
+                <h3 class="skills-subtitle" data-aos="fade-up" data-aos-delay="100">核心能力</h3>
+                <div class="core-skills-grid">
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="skill-number">1</div>
+                        <p class="skill-content">
+                            熟练掌握根据电气图纸进行电气设备及自动化控制设备的规范安装，包括精准定位、线路敷设与端子接线。具备系统调试能力，能通过检查设备运行状态、测量关键电气参数、设置控制程序参数等步骤，确保系统启动正常、运行稳定，符合设计要求。
+                        </p>
+                    </div>
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="skill-number">2</div>
+                        <p class="skill-content">
+                            初步掌握制定并执行电气自动化设备日常维护计划的方法，能够独立进行定期巡检。熟练通过观察设备外观、倾听运行声音等方法判断设备状态。具备执行标准维护操作的能力，如设备清洁、接线端子紧固、机械部件润滑等，有效识别潜在故障隐患，保障设备可靠运行与延长使用寿命。
+                        </p>
+                    </div>
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="skill-number">3</div>
+                        <p class="skill-content">
+                            初步掌握运用检测工具进行电气与自动化系统故障排查的方法。具备逻辑分析能力，能快速定位故障点并判断原因。熟悉常见故障的修复流程，如更换损坏元件、修复线路、调整程序参数等，并能规范记录处理过程与数据，快速恢复系统运行。
+                        </p>
+                    </div>
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="skill-number">4</div>
+                        <p class="skill-content">
+                            掌握基础PLC梯形图编程技能，能够根据简单的生产工艺要求理解、阅读、修改及编写基础控制逻辑程序。具备初步的程序优化意识，理解如何通过调整控制逻辑来提升系统效率、降低能耗或减少设备损耗。
+                        </p>
+                    </div>
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="skill-number">5</div>
+                        <p class="skill-content">
+                            深刻理解并严格遵守电工安全操作规程，确保作业安全。能够准确阅读和理解电气原理图、接线图、设备说明书等技术文档，并依据文档规范执行安装、维护和故障处理任务。
+                        </p>
+                    </div>
+                    <div class="core-skill-card" data-aos="fade-up" data-aos-delay="600">
+                        <div class="skill-number">6</div>
+                        <p class="skill-content">
+                            具备良好的团队协作精神，能在工程师指导下有效参与自动化项目实施。能够承担现场设备安装指导辅助、技术资料收集整理、测试数据记录、验收环节配合等支持性工作。执行力强，能按要求完成分配任务，并具备快速学习新技术、新设备操作规范的能力，保障项目顺利交付。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 复合能力内容 -->
+            <div class="composite-skills-section">
+                <h3 class="skills-subtitle" data-aos="fade-up" data-aos-delay="100">复合能力</h3>
+                <div class="composite-skills-accordion">
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="cpu"></i>
+                                </div>
+                                <span>电气自动化控制系统基础</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                了解可编程逻辑控制器（PLC）的硬件组成、工作循环及基础编程逻辑，例如梯形图；理解工业机器人在电力相关场景，如设备操作与巡检中的应用基础；了解常见传感器与执行器在自动化系统中的作用。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="150">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="file-text"></i>
+                                </div>
+                                <span>电工技术识图能力</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                掌握电路分析基础理论；熟悉常用电工元器件，如电阻、电容、电感、继电器、接触器、断路器等特性、功能及选型原则；熟练识读电气一次系统图、二次系统图、控制原理图及接线图；了解电气安全规范与操作规程。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="sun"></i>
+                                </div>
+                                <span>新能源材料制造工艺认知</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                掌握光伏电池（晶硅/薄膜）、风力发电机叶片、锂电池的核心材料体系及关键制造工艺流程；理解材料特性与器件性能、成本、可靠性的关联。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="250">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="shield"></i>
+                                </div>
+                                <span>电力系统保护与故障分析基础</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                了解电力系统常见故障类型，如短路与接地及其危害；理解继电保护的基本功能，包括速断、过流与差动等及其配置原则；具备初步的故障信息识别与分析意识，例如保护动作信号。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="zap"></i>
+                                </div>
+                                <span>电力系统全流程认知</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                深入理解电力系统"发-输-变-配-用"全流程基本原理与核心环节；熟悉电网的基本架构，包括输电网与配电网，及主要电力设备功能。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="350">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="wind"></i>
+                                </div>
+                                <span>新能源电站运行维护基础</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                理解光伏电站、风电场、储能电站（以电化学储能为主）的基本构成、工作原理、并网流程及典型运行模式；掌握其基础运维内容，包括日常巡检、参数记录及简单故障识别与上报流程；了解新能源发电出力特性与影响因素。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="search"></i>
+                                </div>
+                                <span>电力设备巡检认知</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                熟悉常规电力设备（如变压器、开关柜、线路）及新能源场站设备的标准化巡检流程、项目与规范；掌握基础巡检工具，包括万用表、钳形电流表、红外测温仪、接地电阻测试仪等的使用方法与安全注意事项；了解智能化运维技术，如无人机巡检、在线监测及智能诊断的发展与应用。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="450">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="leaf"></i>
+                                </div>
+                                <span>工业节能意识</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                理解工业领域，涵盖电力、化工与机械制造等主要能耗环节与节能潜力；了解基础节能技术，例如电机变频、余热利用与照明改造，以及能效管理方法，如能源审计与能效对标；具备初步的节能降耗意识。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="500">
+                        <div class="accordion-header">
+                            <div class="accordion-title">
+                                <div class="accordion-icon">
+                                    <i data-lucide="trending-up"></i>
+                                </div>
+                                <span>电力市场认知</span>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="accordion-text">
+                                了解电力市场基本运行规则，涵盖电价形成与交易品种及参与主体；理解虚拟电厂（VPP）的概念、核心功能，包括聚合、调控与交易，及其在提升电网灵活性与消纳新能源中的作用；关注新型业态，如需求侧响应与分布式能源交易。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 个人评价 -->
+    <section id="evaluation" class="evaluation-section-new">
+        <div class="evaluation-container">
+            <h2 class="section-title glitch-text" data-text="个人评价" data-aos="fade-up">个人评价</h2>
+            <div class="evaluation-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="evaluation-content">
+                    <p class="evaluation-text">
+                        我是一名刚完成实习、专科毕业的电气自动化控制技术员助理，具备良好的学习适应能力与团队协作意识。在实习项目中，我认真学习工程师的操作步骤，协助完成硬件安装、程序调试与故障诊断，能及时上报异常并配合技术支持完成修复。
+                    </p>
+                    <p class="evaluation-text">
+                        虽然尚处于职业起步阶段，但我对电气自动化领域充满热情并具备扎实基础。我注重实际操作与安全规范，愿意不断通过实践提升技能水平。希望能在贵公司担任电气自动化控制技术员，继续积累经验、承担更多责任，并与团队共同推动项目顺利实施。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <h2 class="section-title glitch-text" data-text="联系方式" data-aos="fade-up">联系方式</h2>
+            <div class="contact-info" data-aos="fade-up" data-aos-delay="200">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i data-lucide="phone"></i>
+                    </div>
+                    <a href="tel:17523115980" class="contact-link">175-2311-5980</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+                    <a href="mailto:298618825@qq.com" class="contact-link">298618825@qq.com</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i data-lucide="message-circle"></i>
+                    </div>
+                    <span class="contact-link">微信：summerremains2</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i data-lucide="map-pin"></i>
+                    </div>
+                    <span class="contact-link">江苏省 · 南京市</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>&copy; 2024 Energy Portfolio. All rights reserved.</p>
+    </footer>
+
+    <!-- 项目详情弹窗 -->
+    <div id="projectModal" class="project-modal">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 项目详细数据
+        const projectsData = {
+            project1: {
+                title: "变电站供配电系统运维与应急处置全流程提升项目",
+                company: "xxx能源运维有限公司",
+                period: "2024.03~2024.12",
+                position: "变电站运维工程师",
+                overview: "本项目以变电站运行阶段的供配电系统运维为核心，围绕监控-诊断-处置-演练-改进构建精细化运维体系。随着城市电网规模持续扩大，变电站运行安全、可靠和高效的要求不断提升。项目通过应急预案制定、故障识别与快速处置、电气设备预防性检修、系统化演练培训和智能化监控平台建设，形成全链路闭环。实施后，设备完好率稳定保持在98%以上，单次停电平均恢复时间缩短至30分钟以内，应急演练合格率提升至95%以上，显著增强了电网运行安全性和供电连续性。",
+                responsibilities: [
+                    "协助在SCADA与自动化平台完成点表映射与三遥校核，使用Wireshark和串口调试助手分析IEC 60870-5-104和Modbus报文，具备基础网络排障能力。",
+                    "参与通讯故障排查，从物理链路、网络配置、协议层和业务数据逐层定位问题，并结合抓包结果提出整改方案。",
+                    "协助一次与二次设备巡检与调试，完成点核对、比例校准与告警优化，确保设备运行稳定。",
+                    "参与投运调试与试运行跟踪，编制设备清册和参数表，输出联调记录与整改闭环表。",
+                    "协助应急处置与故障消缺，依据一次接线和拓扑分析影响范围，配合调度实施隔离与恢复。",
+                    "协助数据库与报表管理，在MySQL和Excel中完成事件统计与日报/周报，保证数据一致与可追溯。"
+                ],
+                achievements: [
+                    "设备完好率稳定保持在98%以上",
+                    "单次停电平均恢复时间缩短至30分钟以内",
+                    "应急演练合格率提升至95%以上"
+                ],
+                processes: [
+                    {
+                        title: "应急预案编制与职责分配",
+                        description: "在项目初期，针对变电站运行风险开展系统评估，梳理主电源失电、断路器故障、线路跳闸、过载及火灾灾害等典型场景，建立覆盖全面的应急预案。通过岗位职责分工、时间节点设定和流程图绘制，确保突发事件能快速响应和规范执行。预案每季度结合演练与真实处置复盘进行修订，保证实用性与前瞻性。",
+                        content: [
+                            "风险场景梳理：查阅近三年运行日志和事故通报，结合Excel进行事件分类与频次统计，形成高频故障清单，并与SCADA平台实时告警类别对比，建立预案编制参考表。",
+                            "职责体系绘制：协助导师使用Visio绘制应急责任矩阵，明确值班员、运维工程师、班组长与调度中心职责，形成流程节点责任表，保证应急链条无遗漏。",
+                            "时间节点优化：参与模拟演练，验证5分钟确认、10分钟启动、30分钟恢复的时效性，将延迟原因如通信阻塞、操作迟滞记录入案，形成时间优化报告。",
+                            "动态修订机制：整理季度演练和真实处置反馈，建立问题-整改对照表，协助编制预案修订文档，形成持续更新的应急预案体系。"
+                        ],
+                        image: "./public/变电站供配电系统运维与应急处置全流程提升项目/流程一：应急预案编制与职责分配.jpg"
+                    },
+                    {
+                        title: "故障识别与应急处置启动",
+                        description: "运行中通过SCADA监控、保护装置动作信号和人工巡检结合的方式，实现对故障类型与影响范围的快速识别，并按分级体系立即启动对应的应急响应措施。通过区域隔离、备用电源切换与负荷转移，缩短供电恢复时间，降低事故影响范围。",
+                        content: [
+                            "多源识别应用：收集电流、电压、温度异常数据，结合保护动作记录和人工巡检信息，完成多维度故障判定，形成初步诊断报告。",
+                            "故障分级实践：执行Ⅰ级主供电失电、Ⅱ级单台重要设备故障、Ⅲ级轻微异常的分级标准，将诊断结果与分级流程对应，保证资源合理调配。",
+                            "处置流程执行：在导师指导下操作备用电源切换和负荷转移，严格按照操作票执行，并实时记录隔离步骤与切换时长，保证处置过程规范。",
+                            "协同联动支持：负责与调度中心、设备厂家技术支持和后勤部门的沟通记录，建立联络表单，提升多部门协同效率。"
+                        ],
+                        image: "./public/变电站供配电系统运维与应急处置全流程提升项目/流程二：故障识别与应急处置启动.jpeg"
+                    },
+                    {
+                        title: "电气设备检修与维护",
+                        description: "建立日常巡检-计划检修-预防性维护三层次体系，确保主变、断路器、电缆与母线的长期可靠运行。结合油样色谱分析、红外测温和绝缘测试等先进手段，提前发现潜在隐患，并配合台账与智能备件库管理，降低突发故障风险。",
+                        content: [
+                            "日常巡检操作：在值班期间完成设备外观、接点温度和运行噪声检查，使用红外测温仪采集关键点温度，发现异常立即汇报，形成巡检日报。",
+                            "周期检修配合：参与变压器绝缘电阻、断路器动作时间和母线导电率等检测，学习标准化检修流程，并协助录入检修台账系统，确保记录完整。",
+                            "预防性维护执行：在导师指导下完成油样色谱与绝缘介质损耗测试，识别潜在热故障与绝缘劣化隐患，提出提前检修建议。",
+                            "备件管理跟进：负责备件台账更新，定期盘点断路器触头和保护模块库存，确保2–3套安全库存，使用WMS系统完成出入库记录。"
+                        ],
+                        image: "./public/变电站供配电系统运维与应急处置全流程提升项目/流程三：电气设备检修与维护.jpg"
+                    },
+                    {
+                        title: "应急演练与培训",
+                        description: "定期开展桌面推演与实地操作相结合的演练，覆盖失电、开关柜故障和恢复等典型场景。通过系统化培训和跨部门协同演练，确保运维人员熟悉应急流程，提升快速响应和团队配合能力。",
+                        content: [
+                            "演练计划落实：参与制定半年综合演练与季度专项演练表，明确演练目标、场景和步骤，确保演练覆盖典型风险。",
+                            "演练执行记录：在实操演练中跟踪时间节点，记录处置环节偏差和人员表现，输出演练日志和问题清单，供后续整改使用。",
+                            "培训材料整理：协助准备电气安全与事故处置培训课件，整理成PPT和考核题库，供新员工学习与技能考核。",
+                            "跨部门协作复盘：演练后收集消防、安保等部门反馈，整理跨部门协同问题，形成改进建议，推动整体联动效率提升。"
+                        ],
+                        image: "./public/变电站供配电系统运维与应急处置全流程提升项目/流程四：应急演练与培训.jpeg"
+                    },
+                    {
+                        title: "智能监控与数据化预警",
+                        description: "依托多参数传感器网络和大数据平台，对电气设备运行状态进行实时监测与趋势预测。通过多级报警与数据闭环机制，实现提前预警和快速处置，推动变电站运维向智能化转型。",
+                        content: [
+                            "数据采集执行：维护电压、电流、功率因数、温湿度等传感器网络，检查数据采集的实时性和准确性，并输出日报校核结果。",
+                            "趋势建模支持：协助整理历史运行数据，配合导师使用Python与机器学习模型分析设备寿命曲线，预测潜在故障点。",
+                            "报警阈值应用：参与设定电气参数的预警和报警值，测试告警信号是否能通过值班终端和移动APP同步推送，确保信息传递畅通。",
+                            "数据闭环复盘：在每次异常处置后，整理事件数据与处置措施，录入MySQL数据库，生成分析报告，为后续检修和运维优化提供数据支持。"
+                        ],
+                        image: "./public/变电站供配电系统运维与应急处置全流程提升项目/流程五：智能监控与数据化预警.jpg"
+                    }
+                ]
+            },
+            project2: {
+                title: "某220kV变电站迎峰度夏站内外设备专项集中检查项目",
+                company: "xxx电力科技有限公司",
+                period: "2024.03~2024.12",
+                position: "电力巡检无人机飞手",
+                overview: "该项目面向迎峰度夏期间电网负荷大、风险高的运行场景，重点通过无人机对站外线路、杆塔及站内设备进行精细化巡检。夏季高温条件下，设备常见问题包括接点发热、绝缘老化与金具锈蚀，若未能及时发现，将可能引发设备故障或大范围停电。本人在导师指导下，主要参与航线制定、无人机操作、影像采集与缺陷初筛等工作。通过航前准备—航线执行—影像整理—缺陷标注的岗位流程，既提升了巡检效率，也为运维团队提供了可追溯的第一手巡检数据。",
+                responsibilities: [
+                    "依据巡检计划与作业指导书协助制定航线与作业清单，完成起降点、安全区与飞行窗口的准备工作；",
+                    "在导师指导下操控多旋翼无人机完成站外线路与站内设备的例行巡检，获取可见光与红外影像，并做好飞行与作业记录；",
+                    "按照巡检规范对疑似异常点位进行复拍与加密取证，配合同步完成空地交叉核验；",
+                    "使用基础工具对影像进行初步筛查与标注，整理缺陷清单与示意截图，提交技术团队复核；",
+                    "维护设备状态与电池健康，完成航前/航后检查与固件、载荷自检，并更新器材台账；",
+                    "参与现场安全联络，遵守低空作业与电力现场管控要求，发现风险及时上报并协助处置；",
+                    "参与巡检总结与航线复盘，记录障碍物/干扰源分布与改进建议，完善下一轮作业方案。"
+                ],
+                achievements: [
+                    "发现并消除设备隐患127处",
+                    "巡检效率提升300%",
+                    "实现迎峰度夏零故障"
+                ],
+                processes: [
+                    {
+                        title: "航线制定",
+                        description: "根据巡检计划与作业指导书，协助导师制定站外线路与站内设备的无人机航线。明确起降点位置、安全缓冲区与飞行窗口，并形成书面作业清单。通过风险预判标记高危点位，为后续的飞行执行奠定基础。",
+                        content: [
+                            "任务解读：研读巡检任务单，标记站外杆塔编号与站内设备清单，形成航点草案。",
+                            "航线规划：在导师监督下，利用地面站软件编制航线，控制航高、角度与覆盖范围，确保影像采集完整。",
+                            "作业清单整理：将任务目标、设备编号、飞行窗口及影像要求汇总成检查清单，提交导师复核。",
+                            "风险点标记：结合历史缺陷记录与环境因素，提前在航线中标注重点取证点，避免遗漏。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程一：航线制定.jpg"
+                    },
+                    {
+                        title: "航前检查",
+                        description: "在执行任务前，完成无人机机体、电池与载荷设备的全面检查，确保飞行安全可靠。重点关注固件更新、电池电量健康、螺旋桨与云台状态，并做好器材台账更新。通过模拟起飞测试飞行稳定性，排除潜在隐患。",
+                        content: [
+                            "设备检测：逐项检查无人机机体、电池、遥控器与云台相机，确保状态良好。",
+                            "固件确认：完成固件与飞控系统更新，检查飞行模式是否正常，避免因版本不符引发故障。",
+                            "电池管理：核对电池电量、循环次数与温度状态，提前配置备用电池，确保连续航拍任务可执行。",
+                            "试飞演练：进行短距离试飞，观察姿态控制与图传信号，确认飞行系统稳定后方可执行主任务。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程二：航前检查.jpg"
+                    },
+                    {
+                        title: "线路巡检",
+                        description: "操控无人机对220kV输电线路进行例行航拍巡检，获取杆塔、导线、绝缘子与金具的高清可见光与红外影像。重点排查导线发热、绝缘破损与异物搭挂，确保覆盖完整、画面清晰。地面记录同步完成，保证数据有据可依。",
+                        content: [
+                            "航拍执行：按照既定航线操控无人机，保持稳定高度与角度，逐点完成影像采集。",
+                            "红外检测：切换红外镜头，对导线与接点进行温度扫描，发现温差异常时立即复拍。",
+                            "复拍取证：在发现疑似异常点位时，进行多角度、多距离复拍，确保后续分析有足够依据。",
+                            "作业记录：在巡检日志中记录飞行时间、气象条件与拍摄点位，保障数据可追溯。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程三：线路巡检.jpg"
+                    },
+                    {
+                        title: "站内巡检",
+                        description: "在导师带领下，使用无人机完成变电站内设备的低空巡视，重点覆盖母线、刀闸、开关柜顶部及人工难以触及的部位。通过可见光与红外成像结合，快速识别发热、锈蚀、绝缘老化等隐患。现场同步落实安全边界布控，保证飞行与地面作业的互不干扰。站内巡检结果为后续继电保护校验与缺陷整治提供影像依据。",
+                        content: [
+                            "飞行实施：根据站内安全区划设定航点，严格控制飞行高度与航速，避免靠近带电设备，确保巡航过程安全。",
+                            "重点采集：对变压器顶盖、刀闸接点、开关柜母线槽等重点发热点位进行重点取景与红外复测。",
+                            "影像对比：将本次影像与历史档案进行对比，若温度或外观差异显著，立即标记为疑似缺陷点。",
+                            "日志记录：详细记录巡检时间、设备编号、影像编号与环境条件，形成完整台账，保证后续分析可追溯。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程四：站内巡检.jpg"
+                    },
+                    {
+                        title: "影像整理",
+                        description: "巡检结束后，及时导出无人机采集的可见光与红外影像，对图像进行初步筛查与标注。借助基础图像处理工具，将明显异常点进行截图、编号并整理入缺陷清单。与导师或技术团队交接时，提交完整的航线飞行记录与影像存档，确保信息流转规范。",
+                        content: [
+                            "数据导出：将无人机存储卡中的影像分门别类导出，建立站内/站外、可见光/红外的文件夹结构。",
+                            "初步筛查：在工具软件中快速浏览影像，挑选疑似异常部位（如绝缘子裂纹、接头过热、金具锈蚀）并加上标签。",
+                            "缺陷清单：将标注结果整理成缺陷清单，包含截图、设备位置、时间戳及异常说明，便于复核。",
+                            "资料交付：将影像文件、清单与飞行日志一并打包提交，形成正式交付资料，支持后续的专家复核与运维决策。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程五：影像整理.jpg"
+                    },
+                    {
+                        title: "复盘总结",
+                        description: "在巡检任务完成后，参与航线复盘与总结会议。结合飞行日志、影像清单与现场反馈，记录障碍物分布、信号干扰源、飞行路径优化点等，为下一轮巡检提供改进建议。通过复盘实现经验固化—问题追踪—流程优化的闭环，逐步提升巡检的效率与安全性。",
+                        content: [
+                            "航线回顾：逐段回放无人机航线，分析飞行高度、转弯半径与影像覆盖率，提出更优航点规划建议。",
+                            "问题记录：记录飞行中遇到的风速波动、信号干扰、光照不足等问题，并附带改进措施。",
+                            "安全复盘：复盘安全事件与潜在风险，如电池余量不足、人员误入飞行区等，形成警示案例。",
+                            "经验沉淀：将改进意见写入团队共享文档，作为标准化巡检流程的一部分，提升后续作业的参考价值。"
+                        ],
+                        image: "./public/某220kV变电站迎峰度夏站内外设备专项集中检查项目/流程六：复盘总结.jpg"
+                    }
+                ]
+            },
+            project3: {
+                title: "EHS管理体系建设与运行项目",
+                company: "xxx能源科技有限公司",
+                period: "2024.03~2024.12",
+                position: "EHS工程师",
+                overview: "本项目聚焦能源企业的环境、健康与安全（EHS）体系建设与运行，目标是通过ISO14001与ISO45001的融合，建立覆盖生产全流程的合规与风险控制框架。体系建设遵循PDCA循环，逐步形成决策承诺—跨部门协作—风险评估—目标策划—文件运行—试运行改进的闭环模式，实现危险源和环境因素的系统识别与分级管控。通过风险数据库建设、隐患排查整改闭环、事故调查反馈与培训演练，企业的安全环保运行能力显著增强。实施后，职业伤害率下降12%，废水COD排放降低6%，隐患整改闭环率达98%以上，合规性与绿色竞争力得到显著提升。",
+                responsibilities: [
+                    "协助EHS信息化平台与隐患排查系统操作，完成隐患上报、整改闭环和台账分析，使用Excel完成统计与报表。",
+                    "参与危险源辨识与风险评估，运用JSA、LEC和矩阵法完成工序拆解，提出管控措施与残余风险复评。",
+                    "协助事故调查，利用5Why与鱼骨图完成根因分析，形成纠正与预防措施清单，并制作案例课件。",
+                    "参与日常与专项检查，围绕动火、高处、受限空间、电气等作业开展票证合规核查，形成整改跟踪表。",
+                    "协助环保运行，管理废水、废气、噪声与固废台账，分析在线监测数据并提出优化建议。",
+                    "协助安全管理制度运行，参与ISO14001与ISO45001标准体系落地，支持目标分解、内部审核和应急演练。"
+                ],
+                achievements: [
+                    "职业伤害率下降12%",
+                    "废水COD排放降低6%",
+                    "隐患整改闭环率达98%以上"
+                ],
+                processes: [
+                    {
+                        title: "管理层决策与资源承诺",
+                        description: "在体系建设初期，最高管理层的承诺与资源投入是成功运行的前提。通过签署EHS方针声明、设立专项预算、明确职责分工，企业将EHS管理纳入战略层面，确保体系具备合法性、资金保障与执行权威性。该环节为体系运行奠定顶层设计基础，使EHS成为全员参与的制度化行为，而非孤立部门的单一工作。",
+                        content: [
+                            "方针声明协助：在导师指导下整理EHS方针文件，涵盖预防为主、全员参与、持续改进等核心内容，协助将方针公示至厂区公告栏和OA系统。通过收集员工签字确认和反馈问卷，形成宣贯效果统计表，作为体系外审时的宣传证明材料。",
+                            "预算计划支持：协助财务与EHS部门核对年度费用，使用Excel透视表对培训、检测和应急物资费用进行分类汇总，保证EHS专项预算占营收比例≥0.5%。同时对比上年度投入与使用情况，形成差异分析表，提交给管理层作为决策参考。",
+                            "职责分解执行：参与绘制EHS职责分解表，将各部门在隐患排查、事故上报、文件修订等职责落实到岗位层面，利用Visio绘制责任矩阵，形成部门—岗位—任务图谱，确保责任分工在制度和文件中均有明确呈现。",
+                            "审阅记录管理：整理管理层会议纪要，将承诺、预算分配与职责分工内容汇总成电子档案，录入信息化平台的承诺与资源配置模块。这样在外部审核或政府检查时，能快速调取完整记录，证明体系合法性与合规性。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程一：管理层决策与资源承诺.jpeg"
+                    },
+                    {
+                        title: "成立跨部门工作组",
+                        description: "EHS体系涉及生产、设备、环保、人事等多个部门，跨部门协作是体系运行的核心支撑。通过组建跨部门工作组，打破信息壁垒，实现全员参与和决策统一。该小组不仅是体系建设的执行力量，也是后续持续改进的重要骨干。",
+                        content: [
+                            "成员选拔整理：协助EHS主管筛选工作组成员，确保一线员工比例≥40%，并建立成员档案表，记录岗位、工龄和EHS经验，保证方案与实际操作紧密结合。",
+                            "培训落实记录：协助组织体系培训，内容涵盖风险识别、法律法规和应急操作，考试合格率≥90%。负责收集签到表、试卷和成绩汇总，形成培训档案，为外部审核提供依据。",
+                            "会议协作记录：在月度跨部门会议中，记录讨论要点与分歧点，整理问题清单并形成任务分解表，上传至信息化平台，实现责任分工与追踪。",
+                            "骨干培养支持：在导师指导下参与工作组日常任务，学习协调跨部门资源的方法，并撰写案例总结，为未来改进提供经验材料。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程二：成立跨部门工作组.jpeg"
+                    },
+                    {
+                        title: "初始状态评审与风险识别",
+                        description: "在体系建立前，必须全面评估企业现状，包括法规合规性、事故记录、环境因素和岗位危险源。通过法规识别、风险评价与环境因素调查，形成风险清单和合规基线，为目标制定和措施设计提供数据支撑。",
+                        content: [
+                            "法规清单编制：协助收集并整理适用的法律法规，不少于50项，包括《安全生产法》《环境保护法》等，录入法规数据库，并标注更新日期，确保法规库动态更新。",
+                            "风险评估实践：在导师指导下参与风险识别，采用LEC法计算D值，将超过100的风险项归为重大风险，协助编写风险评估报告，并提出专项管控措施建议。",
+                            "环境因素调查：参与现场走访与监测，记录废气、废水、噪声与固废等因素，建立环境因素台账，并协助设定削减目标，例如废水COD降低≥5%。",
+                            "数据归档管理：将法规清单、历史事故案例和风险评估结果录入信息化平台，建立风险数据库，半年更新一次，确保可追溯性与完整性。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程三：初始状态评审与风险识别.jpeg"
+                    },
+                    {
+                        title: "方针目标制定与管理策划",
+                        description: "在风险评审完成后，企业需制定EHS方针并分解为量化目标和部门行动计划，确保目标明确、可衡量和可落实。通过管理策划，将抽象的愿景转化为部门的具体行动。",
+                        content: [
+                            "方针宣贯协助：协助制作EHS方针宣传册，分发至各部门，并张贴于生产现场显眼位置，确保方针深入人心。",
+                            "目标设定支持：参与制定年度指标，如职业伤害率降低≥10%、能源消耗降低≥3%、废水COD降低≥5%，并协助分解至责任部门，形成部门指标表。",
+                            "行动计划编制：配合设备部、环保部等，将目标转化为操作计划，如设备部负责防爆检查，环保部负责废水治理，整理成行动清单并跟踪执行进度。",
+                            "监控指标表格：利用Excel制作监控表，按月收集实际完成数据，对比目标完成情况，使用条件格式标注偏差，形成月度EHS绩效通报。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程四：方针目标制定与管理策划.jpg"
+                    },
+                    {
+                        title: "体系文件编制与发布",
+                        description: "体系文件是EHS管理的操作指南，涵盖管理手册、程序文件和作业指导书，确保员工知道做什么、怎么做、问题出现时怎么办。通过文件化运行，避免管理依赖个人经验，提升制度一致性与可追溯性。",
+                        content: [
+                            "文件框架编制：协助编制1本管理手册、20份程序文件和50份作业指导书，覆盖高风险环节。负责整理初稿并统一版式，保证体系文件结构清晰。",
+                            "版本控制支持：在文件修订过程中，维护编号与修订记录，避免旧版被误用，并建立版本对照表，确保文件使用的唯一性和正确性。",
+                            "档案管理执行：参与建立纸质和电子档案库，保存事故记录、培训签到表、检查报告≥3年，保证满足内外部审计追溯要求。",
+                            "文件宣贯落实：协助组织文件培训，收集一线员工反馈，整理难点与改进建议，推动指导书更贴近实际操作。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程五：体系文件编制与发布.jpeg"
+                    },
+                    {
+                        title: "体系试运行与问题改进",
+                        description: "试运行阶段持续三个月，用于检验体系适用性和执行力。通过收集运行情况、不符合项跟踪与持续改进，确保体系在正式认证前实现稳定运行。",
+                        content: [
+                            "运行监督协助：每周收集运行日志、检查记录与异常事件，整理为EHS周报，提交管理层审阅，推动问题早发现早处理。",
+                            "不符合项跟踪：在试运行中发现的不符合项建立台账，使用信息化系统追踪整改状态，确保关闭率≥95%，并形成复查记录。",
+                            "改进措施建议：在导师指导下将问题分类为制度、培训或执行层面，提出针对性修订建议，保证PDCA循环闭环。",
+                            "运行总结报告：协助撰写体系试运行总结，包含不符合项统计、整改率和改进措施，作为正式审核的基础材料。"
+                        ],
+                        image: "./public/EHS管理体系建设与运行项目/流程六：体系试运行与问题改进.jpeg"
+                    }
+                ]
+            },
+            project4: {
+                title: "风机叶片生产质量控制与研发工艺优化项目",
+                company: "xxx新能源装备制造有限公司",
+                period: "2024.03~2024.12",
+                position: "风机叶片生产技术员",
+                overview: "该项目面向风机叶片生产环节，目标是通过工艺优化与质量管控，确保叶片在极端风况下的稳定性和耐久性。本人在导师指导下主要参与原材料检验、工艺执行、过程监控和缺陷修复等一线工作，重点围绕树脂浸渍、纤维铺层、固化过程记录与小缺陷修复展开。通过全流程的操作配合与数据记录，保障叶片生产的可追溯性和一致性，提升了班组在生产效率、质量合格率和工艺稳定性上的整体水平。",
+                responsibilities: [
+                    "按作业指导书参与叶片铺层、成型与固化等关键工序，配合完成切割、修边与表面处理的现场操作与自检；",
+                    "协助复合材料（玻纤/碳纤、树脂等）领用与批次登记，核对来料外观与合格证明，保障物料可追溯；",
+                    "维护生产环境与关键参数记录（如温湿度、真空状态、固化时间），发现异常及时上报并协助处置；",
+                    "配合真空灌注、模具成型、喷涂等设备的日常点检与保养，保持设备洁净与工装完好；",
+                    "参与质量检验配合工作，按要求完成尺寸测量、外观检查与协助无损检测取样，记录缺陷并跟进返修；",
+                    "根据工艺标准在导师指导下开展小缺陷修复（如气泡、脱胶、边缘毛刺），并配合完成复测与确认；",
+                    "汇总班组生产与质检数据，形成日报/周报，支撑工艺优化与问题复盘；",
+                    "严格执行EHS要求，规范佩戴与使用劳防用品，配合班组开展5S与安全巡检。"
+                ],
+                achievements: [
+                    "产品合格率达99.5%",
+                    "生产周期缩短20%",
+                    "材料利用率提升15%"
+                ],
+                processes: [
+                    {
+                        title: "原材料检验",
+                        description: "在生产前对树脂、玻纤、碳纤等材料进行批次核对与外观检查，确保入库物料符合工艺要求。通过对供应商合格证明、批次编码和物性指标的比对，结合现场取样检测，形成完整的入库记录，避免不合格材料流入生产线。",
+                        content: [
+                            "批次核对：逐桶检查树脂桶号、逐卷扫描玻纤/碳纤卷号，与来料清单和供应商合格证一一对应；在系统中输入批次信息，并为每卷材料粘贴标签，方便生产追溯。",
+                            "外观检查：对树脂进行目测流动性和杂质检查，观察纤维布表面是否存在折痕、掉丝、灰尘或受潮痕迹；用便携式湿度计测试纤维含水率，确保未超过工艺要求。",
+                            "小样检测：在导师监督下取少量树脂样品进行固化试片，记录凝胶时间与固化完全时间；纤维材料抽取短段，进行拉伸强度快速检测，确认是否符合工艺基线。",
+                            "记录归档：将检验结果逐项填入《原材料入库检验表》，并在系统端上传检测数据；同时将异常批次单独隔离并贴上红色标签，禁止上线，形成可追溯的入库档案。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程一：原材料检验.jpg"
+                    },
+                    {
+                        title: "铺层操作",
+                        description: "根据工艺指导书完成玻纤/碳纤布的裁剪与铺层，严格按照排布方向和层间顺序操作。过程强调尺寸精度、层间紧密性和避免气泡，确保后续灌注与固化环节的质量稳定。",
+                        content: [
+                            "裁剪定位：使用专用裁剪台与模板，在导师指导下将纤维布按毫米精度裁剪，逐片编号，并叠放在防潮架上，避免交叉混放。",
+                            "铺层执行：严格遵循工艺文件，从叶片根部到叶尖依次铺设，控制搭接宽度不超过工艺要求（一般 20–30 mm），并在转角区域加贴额外补强布，避免应力集中。",
+                            "气泡处理：在每铺设 2–3 层后使用橡胶滚筒反复压实，排出层间空气，确保纤维与模具表面完全贴合；对局部顽固气泡区域，用针刺小孔再进行真空辅助排气。",
+                            "自检复核：完成一段铺层后，用手电筒检查纤维方向是否偏移，用钢尺复核关键部位尺寸，记录在《工序自检单》，偏差超标立即停工并报告导师处理。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程二：铺层操作.jpg"
+                    },
+                    {
+                        title: "真空灌注",
+                        description: "在导师指导下参与树脂真空灌注操作，重点关注真空度、树脂流速与灌注均匀性。该环节要求保持模具密封性和树脂分布一致性，以防出现干斑、夹气等缺陷，直接影响固化后的力学性能。",
+                        content: [
+                            "设备准备：提前检查真空泵油位与管路密封，确认树脂桶温度通过加热套稳定在 25–30℃，并进行树脂粘度测试，保证在可灌注范围内。",
+                            "灌注执行：在模具边缘铺设导流介质并布置管路，开启真空泵逐步抽真空至 -0.09 MPa 后开始引入树脂；全过程用流量计观察树脂流速，确保在设定区间内。",
+                            "过程监控：在灌注进行时，每隔 5 分钟记录一次真空度、环境温湿度和树脂流动距离；如发现真空度下降超过 0.01 MPa，立即检查密封条并用胶带加固。",
+                            "结果检查：灌注完成后进行局部切片检查，确认纤维完全被树脂浸润；对未浸透区域立即补灌，并记录在《灌注过程监控表》中，作为后续固化质量分析的依据。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程三：真空灌注.jpeg"
+                    },
+                    {
+                        title: "固化操作",
+                        description: "在树脂灌注完成后进入固化阶段，通过温度和时间的精确控制确保树脂完全交联，叶片达到预定的力学性能。固化环节要求对温度曲线、真空保持与环境湿度进行全程监控，并在结束后进行表面检查与记录，作为质量追溯的重要依据。",
+                        content: [
+                            "设备检查：在固化前确认加热毯和控温系统正常运行，温控探头位置摆放到叶片根部、叶尖及中段，保证温度均匀。",
+                            "固化执行：按照工艺曲线逐步升温至设定值（如 80–85℃），保持规定时间，并全程记录升温速率与恒温时间，避免因升温过快导致内应力过大。",
+                            "真空保持：在固化过程中持续保持真空度，定时查看真空表，发现波动立即检查密封胶条和泵体状态。",
+                            "结果确认：固化结束后使用硬度计或刮削测试检查表面树脂固化情况，确认无粘手感；将温度曲线、固化时间等数据存档。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程四：固化操作.jpg"
+                    },
+                    {
+                        title: "修边处理",
+                        description: "固化完成后对叶片多余边料进行切割和修整，保证叶片尺寸精度和外观完整性。该流程不仅影响叶片装配精度，也直接决定气动性能的稳定性。",
+                        content: [
+                            "切割操作：在导师指导下使用手持切割机或专用修边设备，沿设计线切除多余边料，保持刀具锋利并控制切割速度。",
+                            "尺寸复核：修边后用钢卷尺、卡尺对叶片关键尺寸（根部直径、翼缘厚度）进行复核，结果记录在《修边尺寸检查表》。",
+                            "边缘处理：用砂轮或打磨机将边缘倒角，去除毛刺，确保边缘平滑避免裂纹源。",
+                            "现场清理：及时清扫边料碎屑和粉尘，保持工作环境整洁，减少杂质对后续喷涂和检测环节的影响。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程五：修边处理.jpg"
+                    },
+                    {
+                        title: "表面处理",
+                        description: "修边完成后对叶片表面进行打磨、清洁和喷涂，为后续运行中的耐候性和防腐蚀性能提供保障。重点在于表面平整度、喷涂厚度和覆盖均匀性。",
+                        content: [
+                            "表面打磨：使用电动打磨机对叶片表面进行全覆盖打磨，去除表层气泡、划痕和树脂突点，确保喷涂前的平整度。",
+                            "清洁准备：使用无尘布和有机溶剂擦拭叶片表面，去除灰尘与油污，避免影响涂层附着力。",
+                            "喷涂作业：在喷涂间按照工艺要求均匀喷涂底漆和面漆，控制喷枪移动速度和距离，保证涂层厚度在标准范围内。",
+                            "涂层检查：喷涂完成后利用涂层测厚仪检测漆层厚度，确保均匀覆盖并达到防腐蚀要求。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程六：表面处理.png"
+                    },
+                    {
+                        title: "缺陷修复",
+                        description: "在叶片表面或结构检测中发现气泡、裂纹或脱胶等小缺陷时，技术员需按工艺标准进行修复，确保叶片整体性能达标。修复过程要求材料匹配、操作精细，并在返工后进行复检确认。",
+                        content: [
+                            "缺陷定位：在无损检测或外观检查中发现缺陷后，使用标记笔圈定缺陷区域并拍照存档。",
+                            "修复操作：对气泡或裂纹进行打磨开口处理，清洁后填充匹配树脂或贴补纤维布，随后在真空袋下进行二次固化。",
+                            "质量确认：修复完成后进行目视检查和超声波检测，确保缺陷消除且无二次裂纹。",
+                            "记录归档：将缺陷部位、修复方法、使用材料和复检结果填入《缺陷修复记录表》，以便后续质量追踪。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程七：缺陷修复.jpg"
+                    },
+                    {
+                        title: "质量检验",
+                        description: "在叶片出厂前进行全面质量检验，包括尺寸检测、外观检查、力学性能抽检等，确保符合设计标准和交付要求。检验合格后才能进入最终验收环节。",
+                        content: [
+                            "尺寸检测：使用激光测距仪、钢卷尺对叶片长度、根部直径、翼型关键点尺寸进行检测，确保偏差在标准范围内。",
+                            "外观检查：检查表面是否存在气泡、裂纹、涂层脱落等缺陷，并对重点部位拍照存档。",
+                            "性能抽检：在样件叶片上进行弯曲强度和疲劳性能抽样试验，确认批次质量稳定性。",
+                            "结果汇总：形成《出厂检验报告》，将检测数据和结论提交主管审核，作为后续交付的依据。"
+                        ],
+                        image: "./public/风机叶片生产质量控制与研发工艺优化项目/流程八：质量检验.jpeg"
+                    }
+                ]
+            },
+            project5: {
+                title: "某工厂晶硅光伏电池片制备项目",
+                company: "xxx新能源有限公司",
+                period: "2024.03~2024.12",
+                position: "光伏电池生产技术员",
+                overview: "本项目致力于晶体硅光伏电池片的制备工艺优化与质量控制，涵盖硅片切割、化学清洗、表面制绒、PN结扩散、电极制备、减反射膜沉积、快速烧结及组件封装等全流程。项目目标是提高光伏电池片的光电转换效率（≥15%）、稳定性与寿命，降低材料损耗，确保生产过程符合GB/T11446.1-1997电子级水质、IEC61215光伏组件测试等标准，最终生产出高效、低损耗的光伏电池组件，满足地面电站和分布式能源应用需求。",
+                responsibilities: [
+                    "负责丝网印刷工序的标准操作与质量把控，独立操作丝网印刷机完成电池片正背面电极印刷，精确执行浆料粘度调试、网版对位校准与印刷参数（压力、速度、间隙）设定，实时监测印刷图形完整性并及时识别处理断栅、虚印、漏浆等缺陷，确保电极印刷厚度均匀且符合工艺规格要求，每日产出合格片数达班组指标。",
+                    "参与碱制绒槽体的工艺维护与监控，按标准操作流程完成制绒液的原液配制、日常补液与定期更换，持续跟踪槽液温度、浓度及IPA添加量等关键工艺参数，确保硅片表面形成均匀金字塔绒面结构，使平均反射率稳定控制在11%以下，有效提升电池片光捕获能力。",
+                    "开展设备日常点检与基础维护工作，按规定对丝网印刷机、IV测试仪等设备进行开机校准、运行状态监控与下班前清洁保养，及时发现传送带偏移、真空吸附异常或传感器报警等故障征兆，上报技术员并协助完成应急处理，保障设备综合利用率（OEE）达95%以上。",
+                    "负责生产文档的规范填写与数据整理，准确记录工单进度、设备点检表、工艺参数日志与质量检验结果，确保所有生产数据实时、准确、可追溯，并协助班组汇总每日产量、良率与设备停机时间等基础数据，为生产例会提供决策支持。",
+                    "融入班组团队协作体系，主动与制绒、扩散、PECVD等上下工序保持沟通，协调物料流转与异常信息反馈，参与班组班前会与简单质量分析会，配合团队解决现场工艺波动问题，共同维护高效、稳定、安全的生产运行环境。"
+                ],
+                achievements: [
+                    "转换效率达15%以上",
+                    "良率提升至98%",
+                    "成本降低12%"
+                ],
+                processes: [
+                    {
+                        title: "硅片切割",
+                        description: "该环节通过多线切割设备将单晶硅棒切割成厚度约0.3mm的硅片，并进行自动化在线检测，确保硅片表面平整度、厚度公差及电学性能符合后续工艺要求。此过程对于保障后续制程的稳定性与产品良率至关重要。",
+                        content: [
+                            "硅片切割操作：使用精密多线切割设备，确保硅片的厚度公差控制在±10μm内，并通过激光测厚仪实时监控；精确切割减少后续过程中的材料浪费，保障良品率。",
+                            "微裂纹检测：使用红外成像仪对硅片表面进行微裂纹检测，剔除存在缺陷的硅片，避免进入后续工艺环节导致更大损失；此举有效降低生产报废率。",
+                            "电阻率测试：根据GB/T1550标准对电阻率进行检测，确保硅片电学性能的一致性，减少成品之间的性能波动，提高组件整体效率。",
+                            "表面平整度监控：结合自动化检测模块对硅片表面平整度进行监控，确保在切割过程中减少翘曲度，避免后续扩散工艺中产生不均匀性。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程一：硅片切割与初步检测.jpg"
+                    },
+                    {
+                        title: "硅片表面清洗",
+                        description: "通过SC-1和SC-2溶液配合兆声波和超纯水清洗硅片，去除表面污染物，恢复表面纯净度，从而提升后续工艺的稳定性，特别是PN结形成及膜层沉积的均匀性。",
+                        content: [
+                            "有机物去除：使用兆声波与SC-1溶液结合，确保去除表面≥0.2μm的有机物，避免残留影响后续膜层沉积质量。",
+                            "金属离子去除：采用H2O2氧化与H+溶液去除金属离子，减少表面杂质，避免其在后续工艺中形成复合中心，保证光电性能。",
+                            "超纯水冲洗：通过电阻率≥18MΩ·cm的超纯水彻底冲洗硅片，确保表面无离子残留，避免影响制绒及膜层沉积的稳定性。",
+                            "清洗频率控制：每批次硅片严格执行全流程清洗，避免跳过步骤，确保表面清洁度，提升后续工艺的一致性和稳定性。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程二：硅片表面清洗.jpg"
+                    },
+                    {
+                        title: "表面制绒处理",
+                        description: "利用碱性溶液在70–85℃的条件下进行各向异性腐蚀，形成金字塔状绒面结构，从而增强光吸收率并提高电池片的光电转换效率。",
+                        content: [
+                            "溶液浓度调控：调配NaOH溶液浓度至1%±0.2%，确保制绒均匀，避免浓度过高造成表面粗糙，影响光电性能。",
+                            "制绒深度控制：确保制绒深度控制在20–25μm内，避免腐蚀过深影响硅片机械强度，同时保证较高的光吸收效果。",
+                            "添加剂控制：在溶液中加入0.5–1%乙醇，提高腐蚀均匀性，避免局部光学性能差异化，确保制绒效果一致。",
+                            "反射率测定：使用分光光度计测试制绒后硅片的反射率，确保平均反射率≤11%，实现最佳的光捕获效果。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程三：表面制绒处理.jpg"
+                    },
+                    {
+                        title: "PN结扩散",
+                        description: "通过高温扩散炉在硅片表面形成PN结，实现光生载流子的有效分离。扩散过程的温度、时间和气氛控制直接影响方块电阻的均匀性和电池效率。",
+                        content: [
+                            "扩散炉装片：将制绒后的硅片按照规定间距装入石英舟，确保片间距均匀，避免相互遮挡影响扩散均匀性。",
+                            "温度曲线控制：严格按照工艺要求设定升温、恒温、降温曲线，确保扩散温度在850–900℃范围内，时间控制在30–60分钟。",
+                            "气氛调节：通入POCl3源气体，控制流量和浓度，确保磷元素均匀扩散进入硅片表层，形成理想的PN结深度。",
+                            "方块电阻测试：使用四探针测试仪检测扩散后的方块电阻，确保在40–60Ω/□范围内，保证PN结质量。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程四：PN结扩散.jpg"
+                    },
+                    {
+                        title: "边缘刻蚀与去磷硅玻璃",
+                        description: "去除硅片边缘的PN结和表面的磷硅玻璃层，避免电池片短路和影响后续工艺。采用等离子刻蚀或湿法腐蚀技术实现精确去除。",
+                        content: [
+                            "边缘隔离：使用等离子刻蚀设备去除硅片边缘约1-2mm的PN结，避免正负极短路，提高电池的并联电阻。",
+                            "PSG去除：采用HF溶液去除表面磷硅玻璃层，确保后续减反射膜的附着性和光学性能。",
+                            "刻蚀均匀性：通过调节等离子功率和时间，确保刻蚀深度均匀，避免过刻或欠刻影响电池性能。",
+                            "清洗干燥：刻蚀后立即进行超纯水清洗和氮气干燥，避免表面二次污染。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程五：边缘刻蚀与去磷硅玻璃.jpg"
+                    },
+                    {
+                        title: "减反射膜沉积",
+                        description: "采用PECVD技术在硅片表面沉积氮化硅减反射膜，降低光反射损失，同时起到钝化作用，减少表面复合，提高电池效率。",
+                        content: [
+                            "设备参数设定：调节PECVD设备的射频功率、气体流量、沉积温度和时间，确保氮化硅膜厚度在75-80nm范围内。",
+                            "膜层均匀性：通过优化气体分布和基片旋转，确保膜层厚度均匀性≤±5%，保证光学性能一致。",
+                            "折射率控制：调节SiH4和NH3的比例，使氮化硅膜的折射率在2.0-2.1之间，实现最佳减反射效果。",
+                            "膜层质量检测：使用椭偏仪测量膜厚和折射率，确保符合工艺要求，并进行附着力测试验证膜层牢固性。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程六：减反射膜沉积.jpg"
+                    },
+                    {
+                        title: "丝网印刷电极",
+                        description: "通过丝网印刷技术在电池片正背面印刷银浆和铝浆电极，形成电流收集网络。印刷质量直接影响电池的串联电阻和填充因子。",
+                        content: [
+                            "浆料准备：按照工艺要求调配银浆和铝浆的粘度，确保印刷流动性和附着性，避免断栅和虚印。",
+                            "网版对位：精确调节丝网与硅片的对位，确保电极图形位置准确，栅线宽度均匀。",
+                            "印刷参数优化：设定合适的刮刀压力、速度和间隙，确保浆料充分填充网孔，形成连续均匀的电极。",
+                            "质量检查：使用显微镜检查栅线完整性，测量线宽和高度，及时发现并处理印刷缺陷。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程七：丝网印刷电极.jpg"
+                    },
+                    {
+                        title: "快速烧结与测试",
+                        description: "通过高温快速烧结使电极与硅片形成良好的欧姆接触，同时激活背面铝浆形成背场。烧结后进行电性能测试，分档包装。",
+                        content: [
+                            "烧结温度控制：设定烧结炉的温度曲线，峰值温度控制在750-850℃，确保电极充分烧结但不损伤硅片。",
+                            "传送速度调节：根据炉体长度和温度分布，优化传送带速度，确保硅片在各温区的停留时间符合工艺要求。",
+                            "IV测试：使用太阳模拟器进行电性能测试，测量开路电压、短路电流、填充因子和转换效率。",
+                            "分档包装：根据效率等级对电池片进行分档，使用防静电包装材料进行包装，确保运输安全。"
+                        ],
+                        image: "./public/某工厂晶硅光伏电池片制备项目/流程八：组件封装与终检.jpg"
+                    }
+                ]
+            }
+        };
+
+        // 初始化
+        window.addEventListener('load', function() {
+            // 初始化AOS
+            AOS.init({
+                duration: 1000,
+                once: true,
+                offset: 100
+            });
+
+            // 初始化Lucide图标
+            lucide.createIcons();
+
+            // 初始化粒子背景
+            initParticles();
+
+            // 初始化世界地图
+
+            // 初始化雷达图
+            initRadarChart();
+            // 复合能力已改为固定显示，无需初始化手风琴
+
+            // 初始化打字机效果 - 添加了null检查
+            initTypewriter();
+
+            // 初始化数字动画
+            initCountAnimation();
+
+            // 导航栏滚动效果
+            initNavbarScroll();
+
+            // 项目卡片点击事件
+            initProjectCards();
+
+            // 隐藏预加载器 - 增加错误处理
+            setTimeout(() => {
+                const preloader = document.querySelector('.preloader');
+                if (preloader) {
+                    preloader.classList.add('hide');
+                }
+            }, 1500);
+
+            // 添加错误处理，确保即使有错误也会隐藏加载器
+            window.addEventListener('error', function() {
+                const preloader = document.querySelector('.preloader');
+                if (preloader) {
+                    preloader.classList.add('hide');
+                }
+            });
+        });
+
+        // 粒子背景配置
+        function initParticles() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80 },
+                    color: { value: '#00ff80' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: '#00ff80',
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        out_mode: 'out'
+                    }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: {
+                        onhover: { enable: true, mode: 'repulse' },
+                        onclick: { enable: true, mode: 'push' }
+                    }
+                }
+            });
+        }
+
+
+        // 复合能力已改为固定显示，无需手风琴交互
+
+        function initRadarChart() {
+            try {
+                const radarElement = document.getElementById('radar-chart');
+                if (!radarElement) {
+                    console.warn('Radar chart element not found');
+                    return;
+                }
+                const radarChart = echarts.init(radarElement);
+
+            const option = {
+                backgroundColor: 'transparent',
+                radar: {
+                    indicator: [
+                        { name: '电力系统', max: 100 },
+                        { name: '新能源', max: 100 },
+                        { name: '项目管理', max: 100 },
+                        { name: '安全管理', max: 100 },
+                        { name: '智能化', max: 100 },
+                        { name: '质量控制', max: 100 },
+                        { name: '成本优化', max: 100 },
+                        { name: '团队协作', max: 100 }
+                    ],
+                    splitArea: {
+                        areaStyle: {
+                            color: ['rgba(0, 255, 128, 0.05)', 'rgba(0, 168, 255, 0.05)']
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(0, 255, 128, 0.3)'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(0, 255, 128, 0.2)'
+                        }
+                    }
+                },
+                series: [{
+                    type: 'radar',
+                    data: [{
+                        value: [95, 90, 92, 88, 85, 93, 87, 91],
+                        name: '技能水平',
+                        areaStyle: {
+                            color: 'rgba(0, 255, 128, 0.2)'
+                        },
+                        lineStyle: {
+                            color: '#00ff80',
+                            width: 2
+                        },
+                        itemStyle: {
+                            color: '#00ff80'
+                        }
+                    }]
+                }]
+            };
+
+            radarChart.setOption(option);
+
+            window.addEventListener('resize', () => {
+                radarChart.resize();
+            });
+            } catch (error) {
+                console.warn('Failed to initialize radar chart:', error);
+            }
+        }
+
+        // 打字机效果 - 添加null检查防止错误
+        function initTypewriter() {
+            const texts = [
+                '深耕能源行业十年',
+                '电力系统运维专家',
+                '新能源制造先驱',
+                '智慧能源解决方案'
+            ];
+
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typewriter = document.querySelector('.typewriter');
+
+            // 如果typewriter元素不存在，直接返回
+            if (!typewriter) {
+                console.log('Typewriter element not found, skipping animation');
+                return;
+            }
+
+            function type() {
+                const currentText = texts[textIndex];
+
+                if (isDeleting) {
+                    typewriter.textContent = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typewriter.textContent = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                if (!isDeleting && charIndex === currentText.length) {
+                    isDeleting = true;
+                    setTimeout(type, 2000);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(type, 500);
+                } else {
+                    setTimeout(type, isDeleting ? 50 : 100);
+                }
+            }
+
+            type();
+        }
+
+        // 数字动画
+        function initCountAnimation() {
+            const observerOptions = {
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const endValue = parseInt(target.getAttribute('data-count'));
+                        animateValue(target, 0, endValue, 2000);
+                        observer.unobserve(target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stat-number').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        function animateValue(obj, start, end, duration) {
+            const startTime = Date.now();
+            const endTime = startTime + duration;
+
+            function update() {
+                const now = Date.now();
+                const remaining = Math.max(0, endTime - now);
+                const value = Math.round(end - (remaining / duration) * (end - start));
+                obj.textContent = value;
+
+                if (remaining > 0) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+
+        // 导航栏滚动效果
+        function initNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // 项目卡片点击
+        function initProjectCards() {
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const projectId = this.getAttribute('data-project');
+                    openModal(projectId);
+                });
+            });
+        }
+
+        // 打开弹窗
+        function openModal(projectId) {
+            const modal = document.getElementById('projectModal');
+            const modalContent = document.getElementById('modalContent');
+            const project = projectsData[projectId];
+
+            if (!project) return;
+
+            // 生成流程导航和内容
+            let processNavHtml = '';
+            let processContentHtml = '';
+
+            if (project.processes && project.processes.length > 0) {
+                // 生成横向导航栏
+                processNavHtml = project.processes.map((process, index) => `
+                    <button class="process-nav-btn ${index === 0 ? 'active' : ''}"
+                            onclick="switchProcess(${index})"
+                            data-process-index="${index}">
+                        流程${index === 0 ? '一' : index === 1 ? '二' : index === 2 ? '三' : index === 3 ? '四' : index === 4 ? '五' : index === 5 ? '六' : index === 6 ? '七' : index === 7 ? '八' : index === 8 ? '九' : '十'}：${process.title}
+                    </button>
+                `).join('');
+
+                // 生成所有流程的内容（左图右文）
+                processContentHtml = project.processes.map((process, index) => `
+                    <div class="process-panel ${index === 0 ? 'active' : ''}" id="process-${index}">
+                        <div class="process-image-box">
+                            <img src="${process.image}" alt="${process.title}">
+                        </div>
+                        <div class="process-text-box">
+                            <div class="process-description-section">
+                                <p>${process.description}</p>
+                            </div>
+
+                            <div class="process-work-section">
+                                <h4>工作内容</h4>
+                                ${Array.isArray(process.content) ?
+                                    `<ul>${process.content.map(item => `<li>${item}</li>`).join('')}</ul>` :
+                                    `<p>${process.content}</p>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 简化的弹窗内容：只包含流程导航和流程内容
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h2>${project.title}</h2>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="process-navigation">
+                        ${processNavHtml}
+                    </div>
+                    <div class="process-container">
+                        ${processContentHtml}
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // 存储当前项目数据用于流程切换
+            window.currentProject = project;
+            window.currentProcessIndex = 0;
+        }
+
+        // 简化的流程切换函数
+        function switchProcess(processIndex) {
+            // 更新导航按钮状态
+            document.querySelectorAll('.process-nav-btn').forEach((btn, index) => {
+                if (index === processIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // 更新流程面板显示
+            document.querySelectorAll('.process-panel').forEach((panel, index) => {
+                if (index === processIndex) {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
+
+            window.currentProcessIndex = processIndex;
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            const modal = document.getElementById('projectModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('projectModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 滚动到指定区域
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
